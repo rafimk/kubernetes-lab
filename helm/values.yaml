@@ -1,0 +1,24 @@
+env:
+  TZ: "Asia/Dubai"
+
+persistence:
+  homarrDatabase:
+    enabled: true
+    storageClassName: "local-path"
+    size: "1Gi"
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 7575
+
+ingress:
+  enabled: true
+  ingressClassName: "traefik"
+  hosts:
+    - host: homarr.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
