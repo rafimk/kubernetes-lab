@@ -1,0 +1,88 @@
+# values.yaml for kube-prometheus-stack on k3s
+
+# Optional: give a simpler name to resources
+fullnameOverride: kube-prometheus-stack
+
+# -------------------------------
+# Prometheus configuration
+# -------------------------------
+prometheus:
+  prometheusSpec:
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path   # k3s default StorageClass
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+# -------------------------------
+# Alertmanager configuration
+# -------------------------------
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+
+# -------------------------------
+# Grafana configuration
+# -------------------------------
+grafana:
+  adminUser: admin
+  adminPassword: "changeme"   # change this in real setups
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: true
+    ingressClassName: "traefik"
+    hosts:
+      - grafana.local
+    path: /
+    pathType: Prefix
+    tls: []   # you can configure TLS later if you want HTTPS
+
+  persistence:
+    enabled: true
+    storageClassName: "local-path"
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+
+  # (optional) set your timezone for dashboards
+  env:
+    TZ: "Asia/Dubai"
+
+# -------------------------------
+# General settings
+# -------------------------------
+kubeApiServer:
+  enabled: true
+
+kubeControllerManager:
+  enabled: true
+
+kubeScheduler:
+  enabled: true
+
+kubeProxy:
+  enabled: true
+
+kubeEtcd:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
